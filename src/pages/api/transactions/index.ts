@@ -3,11 +3,29 @@ import { getAuth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 
+// Helper function to handle database errors
+const handleDatabaseError = (error: unknown) => {
+  console.error("Database error:", error);
+  if (error instanceof Prisma.PrismaClientInitializationError) {
+    return "Database connection failed";
+  }
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    return `Database error: ${error.code}`;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return "An unexpected error occurred";
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
+    // Test database connection
+    await prisma.$connect();
+
     const { userId } = getAuth(req);
 
     if (!userId) {
@@ -32,12 +50,11 @@ export default async function handler(
 
         return res.status(200).json({ transactions, totalExpense });
       } catch (error) {
-        console.error("Error fetching transactions:", error);
+        const errorMessage = handleDatabaseError(error);
+        console.error("Error fetching transactions:", errorMessage);
         return res.status(500).json({ 
           error: "Failed to fetch transactions",
-          details: process.env.NODE_ENV === 'development' ? 
-            error instanceof Error ? error.message : String(error) 
-            : undefined 
+          details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
         });
       }
     }
@@ -62,7 +79,7 @@ export default async function handler(
             data: {
               id: userId,
               clerkId: userId,
-              email: req.body.email || "user@example.com", // Fallback email
+              email: req.body.email || "user@example.com",
             },
           });
         }
@@ -84,31 +101,24 @@ export default async function handler(
 
         return res.status(201).json(transaction);
       } catch (error) {
-        console.error("Error creating transaction:", error);
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          return res.status(400).json({ 
-            error: "Failed to create transaction",
-            code: error.code,
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined 
-          });
-        }
+        const errorMessage = handleDatabaseError(error);
+        console.error("Error creating transaction:", errorMessage);
         return res.status(500).json({ 
           error: "Failed to create transaction",
-          details: process.env.NODE_ENV === 'development' ? 
-            error instanceof Error ? error.message : String(error) 
-            : undefined 
+          details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
         });
       }
     }
 
     return res.status(405).json({ error: "Method not allowed" });
   } catch (error) {
-    console.error("Unexpected error:", error);
+    const errorMessage = handleDatabaseError(error);
+    console.error("Unexpected error:", errorMessage);
     return res.status(500).json({ 
       error: "Internal server error",
-      details: process.env.NODE_ENV === 'development' ? 
-        error instanceof Error ? error.message : String(error) 
-        : undefined 
+      details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
     });
+  } finally {
+    await prisma.$disconnect();
   }
 } 

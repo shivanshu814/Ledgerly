@@ -1,9 +1,29 @@
 import { PrismaClient } from '@prisma/client';
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+declare global {
+  var prisma: PrismaClient | undefined;
+}
+
+const prismaClientSingleton = () => {
+  return new PrismaClient({
+    log: ['error', 'warn'],
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL
+      },
+    },
+  });
 };
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+const prisma = globalThis.prisma ?? prismaClientSingleton();
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma; 
+// Ensure the prisma instance is reused during hot-reloading in development
+if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma;
+
+// Handle connection errors
+prisma.$connect()
+  .catch((e) => {
+    console.error('Failed to connect to database:', e);
+  });
+
+export { prisma }; 
