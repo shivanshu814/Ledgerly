@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "@clerk/nextjs/server";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -18,7 +18,7 @@ export default async function handler(
     try {
       const transactions = await prisma.transaction.findMany({
         where: {
-          userId,
+          userId: userId,
         },
         orderBy: {
           date: "desc",
@@ -39,7 +39,13 @@ export default async function handler(
 
   if (req.method === "POST") {
     try {
-      const { amount, description, paymentMode, isSplit, date } = req.body;
+      const { amount, description, paymentMode, isSplit, splitWith, category = "OTHER" } = req.body;
+
+      if (!amount || !description || !paymentMode) {
+        return res.status(400).json({
+          error: "Missing required fields",
+        });
+      }
 
       // Check if user exists, if not create one
       let user = await prisma.user.findUnique({
@@ -57,11 +63,13 @@ export default async function handler(
       }
 
       const transactionData = {
-        amount: parseFloat(amount),
+        amount: Number(amount),
         description,
         paymentMode,
         isSplit: Boolean(isSplit),
-        date: new Date(date),
+        splitWith: splitWith || null,
+        category: category,
+        date: new Date(),
         userId: user.id
       };
 
