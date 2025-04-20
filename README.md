@@ -1,5 +1,4 @@
 # 💰 Expense Tracker
-
 A modern and intuitive expense tracking application built with Next.js, featuring real-time updates, beautiful UI, and secure authentication.
 
 ## ✨ Features
