@@ -1,40 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 💰 Expense Tracker
 
-## Getting Started
+A modern and intuitive expense tracking application built with Next.js, featuring real-time updates, beautiful UI, and secure authentication.
 
-First, run the development server:
+![Expense Tracker Demo](public/demo.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 📊 **Dashboard Overview**: Visual representation of your expenses
+- 💳 **Transaction Management**: Add, view, and categorize expenses
+- 🔐 **Secure Authentication**: Powered by Clerk
+- 📱 **Responsive Design**: Works seamlessly on desktop and mobile
+- 🌙 **Modern UI**: Dark theme with neon accents
+- 💾 **Database**: PostgreSQL with Prisma ORM
+- 🔄 **Real-time Updates**: Instant reflection of changes
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## 🚀 Tech Stack
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- **Frontend**: Next.js 14, React, TailwindCSS
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL (NeonDB)
+- **ORM**: Prisma
+- **Authentication**: Clerk
+- **Styling**: TailwindCSS
+- **Icons**: React Icons
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## 📋 Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Before you begin, ensure you have:
 
-## Learn More
+- Node.js 18+ installed
+- PostgreSQL database (We use NeonDB)
+- Clerk account for authentication
+- Git for version control
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Installation Steps
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/shivanshu814/Expense-Tracker.git
+   cd Expense-Tracker
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+3. **Environment Setup**
+   
+   Create a `.env` file in the root directory with the following variables:
+   ```env
+   # Database
+   DATABASE_URL="your_postgresql_connection_string"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   # Clerk Auth
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+   CLERK_SECRET_KEY=your_clerk_secret_key
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+4. **Database Setup**
+   ```bash
+   # Run migrations
+   npx prisma migrate dev
+   
+   # Generate Prisma Client
+   npx prisma generate
+   ```
+
+5. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open your browser**
+   
+   Visit [http://localhost:3000](http://localhost:3000) to see the application
+
+## 📱 Usage Guide
+
+1. **Sign Up/Login**
+   - Create a new account or login using Clerk authentication
+   - You'll be redirected to the dashboard after successful authentication
+
+2. **Dashboard**
+   - View your expense overview
+   - See recent transactions
+   - Check total spending
+
+3. **Add Expense**
+   - Click the "+" button in navigation
+   - Fill in expense details:
+     - Amount
+     - Description
+     - Payment Mode
+     - Category
+     - Split details (optional)
+
+4. **View Transactions**
+   - Access complete transaction history
+   - Filter by categories
+   - Sort by date or amount
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/improvement`)
+3. Make changes
+4. Commit (`git commit -am 'Add new feature'`)
+5. Push (`git push origin feature/improvement`)
+6. Create a Pull Request
+
+## 🐛 Known Issues
+
+- None at the moment. Please report if you find any!
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Shivanshu Kashyap**
+- GitHub: [@shivanshu814](https://github.com/shivanshu814)
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/)
+- [Clerk](https://clerk.dev/)
+- [Prisma](https://www.prisma.io/)
+- [TailwindCSS](https://tailwindcss.com/)
+
+---
+
+⭐️ Star this repo if you find it helpful!
