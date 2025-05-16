@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ClerkProvider {...pageProps}>
       <Head>
-        <title>Expense Tracker Shivanshu</title>
+        <title>Expense Tracker shivanshu</title>
         <meta name='description' content='Track your expenses easily' />
         <link rel='manifest' href='/manifest.json' />
         <meta name='theme-color' content='#4F46E5' />
