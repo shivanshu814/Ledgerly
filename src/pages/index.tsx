@@ -28,7 +28,7 @@ export default function Home() {
     },
     {
       icon: <FiList className='w-7 h-7' />,
-      title: "View History",
+      title: "View History & Download",
       description: "Access your complete transaction history anytime",
       color: "text-[#4ade80]",
       bgColor: "bg-[#4ade80]",
