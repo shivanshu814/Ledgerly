@@ -363,20 +363,6 @@ export default function Dashboard() {
                     <span className='px-2 py-1 text-xs rounded-full bg-[#7289da]/10 text-[#7289da]'>
                       {transaction.paymentMode}
                     </span>
-                    <div className='flex gap-2'>
-                      <button
-                        onClick={() => handleEdit(transaction.id)}
-                        className='p-2 text-[#7289da] hover:bg-[#7289da]/10 rounded-lg transition-colors'
-                      >
-                        <FiEdit2 className='h-4 w-4' />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(transaction.id)}
-                        className='p-2 text-red-400 hover:bg-red-400/10 rounded-lg transition-colors'
-                      >
-                        <FiTrash2 className='h-4 w-4' />
-                      </button>
-                    </div>
                   </div>
                 </motion.div>
               ))
