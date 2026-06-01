@@ -23,7 +23,7 @@ import {
   FiZap,
 } from "react-icons/fi";
 
-type IconComponent = React.ComponentType<{ className?: string }>;
+type IconComponent = React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
 type Option = { value: string; label: string; icon?: IconComponent };
 
 const categories: Option[] = [
@@ -79,17 +79,24 @@ function CustomDropdown({
         className="field flex items-center justify-between text-left"
       >
         <span className="flex min-w-0 items-center gap-3">
-          <Icon className="h-5 w-5 shrink-0 text-teal-800" />
+          <Icon className="h-5 w-5 shrink-0" style={{ color: "var(--teal-dark)" }} />
           <span className="flex items-center gap-2 truncate">
-            {selectedOption?.icon && <selectedOption.icon className="h-4 w-4 shrink-0 text-teal-700" />}
+            {selectedOption?.icon && <selectedOption.icon className="h-4 w-4 shrink-0" style={{ color: "var(--teal)" } as React.CSSProperties} />}
             {selectedOption ? selectedOption.label : placeholder}
           </span>
         </span>
-        <FiChevronDown className={`h-5 w-5 shrink-0 text-stone-500 transition ${isOpen ? "rotate-180" : ""}`} />
+        <FiChevronDown className={`h-5 w-5 shrink-0 transition ${isOpen ? "rotate-180" : ""}`} style={{ color: "var(--ink-3)" }} />
       </button>
 
       {isOpen && (
-        <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-2xl border border-stone-300/80 bg-[#fffbf2] shadow-2xl shadow-stone-900/12">
+        <div
+          className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl"
+          style={{
+            border: "1px solid var(--border)",
+            backgroundColor: "var(--bg-card-solid)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+          }}
+        >
           {options.map((option) => (
             <button
               key={option.value}
@@ -98,11 +105,14 @@ function CustomDropdown({
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-bold transition ${
-                value === option.value ? "bg-[#cbe7dc] text-teal-950" : "text-stone-700 hover:bg-white"
-              }`}
+              className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-bold transition"
+              style={
+                value === option.value
+                  ? { backgroundColor: "var(--teal-light)", color: "var(--teal-text)" }
+                  : { color: "var(--ink-2)" }
+              }
             >
-              {option.icon && <option.icon className="h-4 w-4 shrink-0 text-teal-700" />}
+              {option.icon && <option.icon className="h-4 w-4 shrink-0" style={{ color: "var(--teal)" } as React.CSSProperties} />}
               {option.label}
             </button>
           ))}
@@ -128,28 +138,36 @@ export default function AddExpense() {
     e.preventDefault();
     if (!user) return;
 
-    try {
-      const response = await fetch("/api/transactions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          amount: parseFloat(formData.amount),
-          date: new Date().toISOString(),
-        }),
-      });
-
-      if (response.ok) {
-        toast.success("Expense added");
-        router.push("/dashboard");
-      } else {
-        const error = await response.json();
-        toast.error(error.error || "Failed to add expense");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("An error occurred");
+    const amount = parseFloat(formData.amount);
+    if (!amount || amount <= 0) {
+      toast.error("Enter a valid amount greater than ₹0");
+      return;
     }
+    if (!formData.description.trim()) {
+      toast.error("Add a description so you remember this later");
+      return;
+    }
+
+    const submit = fetch("/api/transactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...formData, amount, date: new Date().toISOString() }),
+    }).then(async (res) => {
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to save");
+      }
+      return res.json();
+    });
+
+    toast.promise(submit, {
+      loading: "Saving expense…",
+      success: () => {
+        router.push("/dashboard");
+        return `₹${amount.toLocaleString("en-IN")} logged successfully 🎉`;
+      },
+      error: (err) => err?.message || "Something went wrong. Try again.",
+    });
   };
 
   return (
@@ -163,13 +181,16 @@ export default function AddExpense() {
         <div className="grid gap-6 lg:grid-cols-[0.78fr_1.22fr]">
           <section className="panel p-6 sm:p-7">
             <p className="eyebrow">New entry</p>
-            <h1 className="page-title mt-3 text-stone-950">Add an expense.</h1>
-            <p className="mt-5 text-base font-medium leading-7 text-stone-600">
+            <h1 className="page-title mt-3">Add an expense.</h1>
+            <p className="mt-5 text-base font-medium leading-7" style={{ color: "var(--ink-3)" }}>
               Keep the ledger fresh while the detail is still in your head. Category and
               payment mode make reports cleaner later.
             </p>
-            <div className="mt-8 rounded-2xl bg-[#17211d] p-5 text-[#fffbf2]">
-              <p className="text-sm font-bold text-stone-300">Current amount</p>
+            <div
+              className="mt-8 rounded-2xl p-5"
+              style={{ backgroundColor: "var(--bg-invert)", color: "var(--ink-invert)" }}
+            >
+              <p className="text-sm font-bold" style={{ opacity: 0.7 }}>Current amount</p>
               <p className="mt-2 text-4xl font-black">
                 ₹{Number(formData.amount || 0).toLocaleString("en-IN")}
               </p>
@@ -181,7 +202,10 @@ export default function AddExpense() {
               <div>
                 <label className="label">Amount</label>
                 <div className="relative">
-                  <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-black text-teal-800">
+                  <span
+                    className="pointer-events-none absolute text-lg font-black"
+                    style={{ color: "var(--teal-dark)", left: "1rem", top: "50%", transform: "translateY(-50%)" }}
+                  >
                     ₹
                   </span>
                   <input
@@ -200,7 +224,10 @@ export default function AddExpense() {
               <div>
                 <label className="label">Description</label>
                 <div className="relative">
-                  <FiFileText className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-teal-800" />
+                  <FiFileText
+                    className="pointer-events-none absolute h-5 w-5"
+                    style={{ color: "var(--teal-dark)", left: "1rem", top: "50%", transform: "translateY(-50%)" }}
+                  />
                   <input
                     type="text"
                     value={formData.description}
@@ -236,20 +263,40 @@ export default function AddExpense() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-stone-300/80 bg-white/45 p-4">
-                <label className="flex items-center gap-3 text-sm font-extrabold text-stone-800">
-                  <input
-                    type="checkbox"
-                    checked={formData.isSplit}
-                    onChange={(e) => setFormData({ ...formData, isSplit: e.target.checked })}
-                    className="h-5 w-5 rounded border-stone-300 text-teal-700 focus:ring-teal-700"
-                  />
+              <div
+                className="rounded-2xl p-4"
+                style={{ border: "1px solid var(--border)", backgroundColor: "var(--bg-pill)" }}
+              >
+                <label className="flex cursor-pointer items-center gap-3 text-sm font-extrabold" style={{ color: "var(--ink-2)" }}>
+                  <span
+                    className="relative flex h-5 w-5 shrink-0 items-center justify-center rounded"
+                    style={{
+                      border: formData.isSplit ? "none" : "2px solid var(--border-strong)",
+                      backgroundColor: formData.isSplit ? "var(--teal)" : "var(--bg-input)",
+                      transition: "all 150ms",
+                    }}
+                  >
+                    {formData.isSplit && (
+                      <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
+                        <path d="M1 4L4 7L10 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                    <input
+                      type="checkbox"
+                      checked={formData.isSplit}
+                      onChange={(e) => setFormData({ ...formData, isSplit: e.target.checked })}
+                      className="absolute inset-0 cursor-pointer opacity-0"
+                    />
+                  </span>
                   Split this expense
                 </label>
 
                 {formData.isSplit && (
                   <div className="relative mt-4">
-                    <FiUsers className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-teal-800" />
+                    <FiUsers
+                      className="pointer-events-none absolute h-5 w-5"
+                      style={{ color: "var(--teal-dark)", left: "1rem", top: "50%", transform: "translateY(-50%)" }}
+                    />
                     <input
                       type="text"
                       value={formData.splitWith}

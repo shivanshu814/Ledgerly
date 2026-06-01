@@ -29,12 +29,15 @@ export default function Home() {
       <div className="mx-auto flex min-h-[calc(100vh-3rem)] max-w-7xl flex-col">
         <header className="flex items-center justify-between py-4">
           <div className="flex items-center gap-3">
-            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#17211d] text-xl font-black text-[#fffbf2] shadow-xl shadow-stone-900/10">
+            <div
+              className="grid h-12 w-12 place-items-center rounded-2xl text-xl font-black shadow-xl"
+              style={{ backgroundColor: "var(--bg-invert)", color: "var(--ink-invert)" }}
+            >
               L
             </div>
             <div>
-              <p className="text-xl font-black leading-none text-stone-950">Ledgerly</p>
-              <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-stone-500">
+              <p className="text-xl font-black leading-none" style={{ color: "var(--ink)" }}>Ledgerly</p>
+              <p className="mt-1 text-xs font-bold uppercase" style={{ color: "var(--ink-3)", letterSpacing: "0.2em" }}>
                 Expense clarity
               </p>
             </div>
@@ -49,10 +52,10 @@ export default function Home() {
         <section className="grid flex-1 items-center gap-10 py-8 lg:grid-cols-[1.04fr_0.96fr] lg:py-12">
           <div className="max-w-3xl">
             <p className="eyebrow mb-5">Built for everyday money decisions</p>
-            <h1 className="display-title text-stone-950">
+            <h1 className="display-title">
               Track expenses without making finance feel heavy.
             </h1>
-            <p className="mt-7 max-w-2xl text-lg font-medium leading-8 text-stone-600 sm:text-xl">
+            <p className="mt-7 max-w-2xl text-lg font-medium leading-8 sm:text-xl" style={{ color: "var(--ink-3)" }}>
               Ledgerly turns day-to-day spending into a calm, readable ledger with
               monthly summaries, smart filters, and quick entry for Indian payment modes.
             </p>
@@ -82,20 +85,27 @@ export default function Home() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="eyebrow">June snapshot</p>
-                  <p className="mt-3 text-4xl font-black text-stone-950">₹24,860</p>
-                  <p className="mt-1 text-sm font-bold text-stone-500">Tracked this month</p>
+                  <p className="mt-3 text-4xl font-black" style={{ color: "var(--ink)" }}>₹24,860</p>
+                  <p className="mt-1 text-sm font-bold" style={{ color: "var(--ink-3)" }}>Tracked this month</p>
                 </div>
-                <div className="rounded-2xl bg-[#cbe7dc] p-3 text-teal-900">
+                <div className="rounded-2xl p-3" style={{ backgroundColor: "var(--bg-accent)", color: "var(--teal-dark)" }}>
                   <FiShield className="h-6 w-6" />
                 </div>
               </div>
 
-              <div className="mt-8 grid grid-cols-7 items-end gap-2">
+              <div className="mt-8 flex h-44 items-end justify-between gap-2">
                 {[38, 62, 44, 82, 55, 72, 48].map((height, index) => (
-                  <div key={index} className="flex h-44 items-end rounded-full bg-stone-200/70 p-1">
+                  <div
+                    key={index}
+                    className="relative flex-1 h-full flex items-end"
+                  >
                     <div
-                      className="w-full rounded-full bg-[#0f766e]"
-                      style={{ height: `${height}%` }}
+                      className="absolute inset-0 rounded-lg"
+                      style={{ backgroundColor: "rgba(214, 211, 208, 0.5)" }}
+                    />
+                    <div
+                      className="relative w-full rounded-lg"
+                      style={{ height: `${height}%`, backgroundColor: "var(--teal)" }}
                     />
                   </div>
                 ))}
@@ -107,12 +117,16 @@ export default function Home() {
                   ["Metro recharge", "Card", "₹500"],
                   ["Movie night", "Cash", "₹1,200"],
                 ].map(([label, mode, amount]) => (
-                  <div key={label} className="flex items-center justify-between rounded-2xl bg-white/62 p-4">
+                  <div
+                    key={label}
+                    className="flex items-center justify-between rounded-2xl p-4"
+                    style={{ backgroundColor: "var(--bg-pill)" }}
+                  >
                     <div>
-                      <p className="font-extrabold text-stone-900">{label}</p>
-                      <p className="text-sm font-bold text-stone-500">{mode}</p>
+                      <p className="font-extrabold" style={{ color: "var(--ink)" }}>{label}</p>
+                      <p className="text-sm font-bold" style={{ color: "var(--ink-3)" }}>{mode}</p>
                     </div>
-                    <p className="font-black text-[#c2413a]">{amount}</p>
+                    <p className="font-black" style={{ color: "var(--rose)" }}>{amount}</p>
                   </div>
                 ))}
               </div>
@@ -125,9 +139,9 @@ export default function Home() {
             const Icon = feature.icon;
             return (
               <div key={feature.title} className="panel-tight p-5">
-                <Icon className="h-6 w-6 text-teal-800" />
-                <h2 className="mt-4 text-lg font-black text-stone-950">{feature.title}</h2>
-                <p className="mt-2 text-sm font-medium leading-6 text-stone-600">
+                <Icon className="h-6 w-6" style={{ color: "var(--teal-dark)" }} />
+                <h2 className="mt-4 text-lg font-black" style={{ color: "var(--ink)" }}>{feature.title}</h2>
+                <p className="mt-2 text-sm font-medium leading-6" style={{ color: "var(--ink-3)" }}>
                   {feature.description}
                 </p>
               </div>

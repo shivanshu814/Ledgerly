@@ -1,29 +1,26 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 declare global {
+  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 
-const prismaClientSingleton = () => {
+function createPrismaClient() {
+  // For Neon serverless: connection_limit=1 prevents pool exhaustion,
+  // connect_timeout=10 allows retries on cold starts,
+  // pool_timeout=0 disables pool wait timeouts.
+  const url = process.env.DATABASE_URL ?? "";
+  const separator = url.includes("?") ? "&" : "?";
+  const datasourceUrl = url.includes("connection_limit")
+    ? url
+    : `${url}${separator}connection_limit=1&connect_timeout=10&pool_timeout=0`;
+
   return new PrismaClient({
-    log: ['error', 'warn'],
-    datasources: {
-      db: {
-        url: process.env.DATABASE_URL
-      },
-    },
+    datasources: { db: { url: datasourceUrl } },
+    log: process.env.NODE_ENV === "development" ? ["error"] : ["error"],
   });
-};
+}
 
-const prisma = globalThis.prisma ?? prismaClientSingleton();
+export const prisma = globalThis.prisma ?? createPrismaClient();
 
-// Ensure the prisma instance is reused during hot-reloading in development
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma;
-
-// Handle connection errors
-prisma.$connect()
-  .catch((e) => {
-    console.error('Failed to connect to database:', e);
-  });
-
-export { prisma }; 
+if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;

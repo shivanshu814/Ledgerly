@@ -36,4 +36,7 @@ model Transaction {
   updatedAt   DateTime @updatedAt
 
   @@index([userId])
+  @@index([userId, date])           // date-range queries (dashboard, transactions)
+  @@index([userId, date, paymentMode]) // filtered queries with payment mode
+  @@index([userId, category])       // category breakdown queries
 } 
