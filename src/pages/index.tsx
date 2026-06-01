@@ -1,142 +1,140 @@
-import { useUser, SignUpButton } from "@clerk/nextjs";
+import { useUser, SignUpButton, SignInButton } from "@clerk/nextjs";
 import { useRouter } from "next/router";
-import { Inter } from "next/font/google";
-import { FiClock, FiPlus, FiList } from "react-icons/fi";
+import { FiArrowUpRight, FiClock, FiList, FiPlus, FiShield } from "react-icons/fi";
 
-const inter = Inter({ subsets: ["latin"] });
+const features = [
+  {
+    icon: FiClock,
+    title: "Daily spending rhythm",
+    description: "Spot busy days, quiet days, and where your money actually goes.",
+  },
+  {
+    icon: FiPlus,
+    title: "Fast expense capture",
+    description: "Amount, category, mode, split details. No spreadsheet ceremony.",
+  },
+  {
+    icon: FiList,
+    title: "Clean history",
+    description: "Filter, edit, delete, and export reports when you need proof.",
+  },
+];
 
 export default function Home() {
   const { user } = useUser();
   const router = useRouter();
 
-  const features = [
-    {
-      icon: <FiClock className='w-7 h-7' />,
-      title: "Track Expenses",
-      description: "Monitor your spending with detailed analytics and charts",
-      color: "text-[#e879f9]",
-      bgColor: "bg-[#e879f9]",
-      glowColor: "shadow-[#e879f9]",
-    },
-    {
-      icon: <FiPlus className='w-7 h-7' />,
-      title: "Add Expenses",
-      description: "Quickly add new expenses with multiple payment modes",
-      color: "text-[#818cf8]",
-      bgColor: "bg-[#818cf8]",
-      glowColor: "shadow-[#818cf8]",
-    },
-    {
-      icon: <FiList className='w-7 h-7' />,
-      title: "View History & Download",
-      description: "Access your complete transaction history anytime",
-      color: "text-[#4ade80]",
-      bgColor: "bg-[#4ade80]",
-      glowColor: "shadow-[#4ade80]",
-    },
-  ];
-
   return (
-    <div className={`${inter.className} min-h-screen bg-black text-white`}>
-      {/* Animated background */}
-      <div className='fixed inset-0 -z-10'>
-        <div className='absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]'></div>
-        <div className='absolute left-0 right-0 top-[-10%] h-[1000px] w-[1000px] rounded-full bg-[radial-gradient(circle_400px_at_50%_300px,#8b5cf6,transparent)] opacity-20'></div>
-      </div>
-
-      <div className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-        <div className='text-center' style={{ paddingTop: "100px" }}>
-          <h1 className='text-7xl sm:text-8xl md:text-9xl font-bold tracking-tight'>
-            <span className='relative inline-block'>
-              <span className='absolute -inset-2 blur-3xl bg-[#8b5cf6] opacity-20 animate-pulse'></span>
-              <span className='relative text-[#8b5cf6] mt-10 animate-text-glow'>
-                Track Your Expense
-              </span>
-            </span>
-          </h1>
-          <p className='mt-12 text-xl sm:text-2xl text-gray-400 max-w-2xl mx-auto'>
-            A simple and powerful expense tracker to help you manage your
-            finances better.
-          </p>
-          <div className='mt-16 max-w-md mx-auto'>
-            {user ? (
-              <button
-                onClick={() => router.push("/dashboard")}
-                className='w-full group relative flex items-center justify-center px-8 py-4 text-lg font-medium rounded-xl bg-[#8b5cf6] text-white overflow-hidden shadow-lg shadow-[#8b5cf6]/30 hover:shadow-[#8b5cf6]/50 transition-all duration-300 hover:scale-[1.02]'
-              >
-                <span className='absolute inset-0 bg-gradient-to-r from-[#8b5cf6] via-[#6d28d9] to-[#8b5cf6] animate-gradient-x'></span>
-                <span className='relative'>Go to Dashboard</span>
-              </button>
-            ) : (
-              <SignUpButton mode='modal'>
-                <button className='w-full group relative flex items-center justify-center px-8 py-4 text-lg font-medium rounded-xl bg-[#8b5cf6] text-white overflow-hidden shadow-lg shadow-[#8b5cf6]/30 hover:shadow-[#8b5cf6]/50 transition-all duration-300 hover:scale-[1.02]'>
-                  <span className='absolute inset-0 bg-gradient-to-r from-[#8b5cf6] via-[#6d28d9] to-[#8b5cf6] animate-gradient-x'></span>
-                  <span className='relative'>Get Started</span>
-                </button>
-              </SignUpButton>
-            )}
+    <main className="min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] max-w-7xl flex-col">
+        <header className="flex items-center justify-between py-4">
+          <div className="flex items-center gap-3">
+            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#17211d] text-xl font-black text-[#fffbf2] shadow-xl shadow-stone-900/10">
+              L
+            </div>
+            <div>
+              <p className="text-xl font-black leading-none text-stone-950">Ledgerly</p>
+              <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-stone-500">
+                Expense clarity
+              </p>
+            </div>
           </div>
-        </div>
+          {!user && (
+            <SignInButton mode="modal">
+              <button className="btn-secondary px-4 py-2.5">Sign in</button>
+            </SignInButton>
+          )}
+        </header>
 
-        <div className='mt-10'>
-          <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3'>
-            {features.map((feature, index) => (
-              <div key={index} className='group relative'>
-                <div className='relative overflow-hidden bg-black backdrop-blur-xl rounded-2xl shadow-xl border border-white/5 p-8 transition-all duration-300 hover:border-white/10 hover:shadow-2xl hover:scale-[1.02]'>
-                  <div
-                    className={`absolute inset-0 ${feature.bgColor} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
-                  ></div>
-                  <div className='relative'>
-                    <span
-                      className={`inline-flex items-center justify-center p-4 rounded-xl ${feature.color} shadow-lg ${feature.glowColor}/20`}
-                    >
-                      {feature.icon}
-                    </span>
-                    <h3
-                      className={`mt-8 text-xl font-medium tracking-tight ${feature.color}`}
-                    >
-                      {feature.title}
-                    </h3>
-                    <p className='mt-4 text-base text-gray-400'>
-                      {feature.description}
-                    </p>
-                  </div>
+        <section className="grid flex-1 items-center gap-10 py-8 lg:grid-cols-[1.04fr_0.96fr] lg:py-12">
+          <div className="max-w-3xl">
+            <p className="eyebrow mb-5">Built for everyday money decisions</p>
+            <h1 className="display-title text-stone-950">
+              Track expenses without making finance feel heavy.
+            </h1>
+            <p className="mt-7 max-w-2xl text-lg font-medium leading-8 text-stone-600 sm:text-xl">
+              Ledgerly turns day-to-day spending into a calm, readable ledger with
+              monthly summaries, smart filters, and quick entry for Indian payment modes.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              {user ? (
+                <button onClick={() => router.push("/dashboard")} className="btn-primary">
+                  Open dashboard
+                  <FiArrowUpRight className="h-5 w-5" />
+                </button>
+              ) : (
+                <SignUpButton mode="modal">
+                  <button className="btn-primary">
+                    Start tracking
+                    <FiArrowUpRight className="h-5 w-5" />
+                  </button>
+                </SignUpButton>
+              )}
+              <button onClick={() => router.push(user ? "/add-expense" : "/")} className="btn-secondary">
+                <FiPlus className="h-5 w-5" />
+                Quick add
+              </button>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="panel overflow-hidden p-5 sm:p-7">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="eyebrow">June snapshot</p>
+                  <p className="mt-3 text-4xl font-black text-stone-950">₹24,860</p>
+                  <p className="mt-1 text-sm font-bold text-stone-500">Tracked this month</p>
+                </div>
+                <div className="rounded-2xl bg-[#cbe7dc] p-3 text-teal-900">
+                  <FiShield className="h-6 w-6" />
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
-      <style jsx global>{`
-        @keyframes text-glow {
-          0%,
-          100% {
-            text-shadow: 0 0 30px #8b5cf6;
-          }
-          50% {
-            text-shadow: 0 0 60px #8b5cf6;
-          }
-        }
-        .animate-text-glow {
-          animation: text-glow 2s ease-in-out infinite;
-        }
-        @keyframes gradient-x {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-        .animate-gradient-x {
-          animation: gradient-x 3s ease infinite;
-          background-size: 200% 200%;
-        }
-      `}</style>
-    </div>
+              <div className="mt-8 grid grid-cols-7 items-end gap-2">
+                {[38, 62, 44, 82, 55, 72, 48].map((height, index) => (
+                  <div key={index} className="flex h-44 items-end rounded-full bg-stone-200/70 p-1">
+                    <div
+                      className="w-full rounded-full bg-[#0f766e]"
+                      style={{ height: `${height}%` }}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 space-y-3">
+                {[
+                  ["Food & Dining", "UPI", "₹840"],
+                  ["Metro recharge", "Card", "₹500"],
+                  ["Movie night", "Cash", "₹1,200"],
+                ].map(([label, mode, amount]) => (
+                  <div key={label} className="flex items-center justify-between rounded-2xl bg-white/62 p-4">
+                    <div>
+                      <p className="font-extrabold text-stone-900">{label}</p>
+                      <p className="text-sm font-bold text-stone-500">{mode}</p>
+                    </div>
+                    <p className="font-black text-[#c2413a]">{amount}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-4 pb-10 md:grid-cols-3">
+          {features.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <div key={feature.title} className="panel-tight p-5">
+                <Icon className="h-6 w-6 text-teal-800" />
+                <h2 className="mt-4 text-lg font-black text-stone-950">{feature.title}</h2>
+                <p className="mt-2 text-sm font-medium leading-6 text-stone-600">
+                  {feature.description}
+                </p>
+              </div>
+            );
+          })}
+        </section>
+      </div>
+    </main>
   );
 }

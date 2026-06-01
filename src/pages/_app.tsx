@@ -9,10 +9,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ClerkProvider {...pageProps}>
       <Head>
-        <title>Expense Tracker shivanshu</title>
-        <meta name="description" content="Track your expenses easily" />
+        <title>Ledgerly</title>
+        <meta name="description" content="Track expenses, review spending, and export clean reports with Ledgerly." />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#4F46E5" />
+        <meta name="theme-color" content="#f6f2e9" />
         <meta name="google-adsense-account" content="ca-pub-9905115179215642" />
         <script
           async
@@ -21,7 +21,17 @@ export default function App({ Component, pageProps }: AppProps) {
         ></script>
       </Head>
       <Navigation />
-      <Toaster position="top-right" />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: "#17211d",
+            color: "#fffbf2",
+            borderRadius: "16px",
+            fontWeight: 800,
+          },
+        }}
+      />
       <Component {...pageProps} />
     </ClerkProvider>
   );
