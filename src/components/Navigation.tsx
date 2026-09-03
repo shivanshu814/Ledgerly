@@ -1,6 +1,6 @@
 import { useUser, useClerk } from "@clerk/nextjs";
 import { FiHome, FiPlus, FiList, FiLogOut, FiSun, FiMoon } from "react-icons/fi";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import React from "react";
@@ -15,8 +15,8 @@ const navItems = [
 export default function Navigation() {
   const { user } = useUser();
   const { signOut } = useClerk();
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = router.pathname;
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggle } = useTheme();
 
