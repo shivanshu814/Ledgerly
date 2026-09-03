@@ -20,6 +20,7 @@ import {
   FiGlobe,
   FiSearch,
   FiSmartphone,
+  FiTag,
   FiTrash2,
   FiX,
 } from "react-icons/fi";
@@ -46,6 +47,17 @@ const paymentModesOptions: Option[] = [
   { value: "CARD", label: "Card", icon: FiCreditCard },
   { value: "UPI", label: "UPI", icon: FiSmartphone },
   { value: "NET_BANKING", label: "Net Banking", icon: FiDatabase },
+];
+
+const categoriesOptions: Option[] = [
+  { value: "FOOD", label: "Food & Dining" },
+  { value: "TRANSPORT", label: "Transportation" },
+  { value: "SHOPPING", label: "Shopping" },
+  { value: "ENTERTAINMENT", label: "Entertainment" },
+  { value: "BILLS", label: "Bills & Utilities" },
+  { value: "HEALTH", label: "Health & Fitness" },
+  { value: "TRAVEL", label: "Travel" },
+  { value: "OTHER", label: "Other" },
 ];
 
 const sortOptions: Option[] = [
@@ -577,6 +589,16 @@ export default function Transactions({ initialData, initialMonth, initialYear }:
                     value={editingTransaction.description}
                     onChange={(e) => setEditingTransaction({ ...editingTransaction, description: e.target.value })}
                     className="field"
+                  />
+                </div>
+                <div>
+                  <label className="label">Category</label>
+                  <CustomDropdown
+                    options={categoriesOptions}
+                    value={editingTransaction.category}
+                    onChange={(v) => setEditingTransaction({ ...editingTransaction, category: v })}
+                    icon={FiTag}
+                    placeholder="Category"
                   />
                 </div>
                 <div>
